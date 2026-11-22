@@ -1,6 +1,7 @@
 """Tests for long polling."""
 
 import unittest
+from typing import Any
 from unittest.mock import Mock
 
 from bot.long_polling import poll_once
