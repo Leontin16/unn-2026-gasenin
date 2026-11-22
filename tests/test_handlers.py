@@ -15,9 +15,7 @@ class MessageTextHandlerTests(unittest.TestCase):
 
     @patch("builtins.print")
     def test_echoes_text_message(self, _print: Mock) -> None:
-        update: dict[str, Any] = {
-            "message": {"text": "Hello", "chat": {"id": 123}}
-        }
+        update: dict[str, Any] = {"message": {"text": "Hello", "chat": {"id": 123}}}
 
         self.assertTrue(self.handler.can_handle(update))
         self.assertIs(self.handler.handle(update), HandlerStatus.STOP)
