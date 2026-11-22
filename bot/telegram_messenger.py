@@ -2,7 +2,7 @@
 
 import json
 from typing import Any
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 from urllib.request import Request, urlopen
 
 from bot.messenger import Messenger
