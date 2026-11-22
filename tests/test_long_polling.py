@@ -20,7 +20,7 @@ class FakeMessenger(Messenger):
         self,
         offset: int,
         timeout: int = 30,
-        limit: int = 100,
+        limit: int = 50,
         allowed_updates: tuple[str, ...] = ("message",),
     ) -> list[dict[str, Any]]:
         self.requested_offset = offset
@@ -43,7 +43,7 @@ class LongPollingTests(unittest.TestCase):
 
         self.assertEqual(messenger.requested_offset, 5)
         self.assertEqual(messenger.requested_timeout, 30)
-        self.assertEqual(messenger.requested_limit, 100)
+        self.assertEqual(messenger.requested_limit, 50)
         self.assertEqual(messenger.requested_allowed_updates, ("message",))
         self.assertEqual(next_offset, 13)
         self.assertEqual(dispatcher.dispatch.call_count, 2)
@@ -54,6 +54,6 @@ class LongPollingTests(unittest.TestCase):
 
         self.assertEqual(poll_once(messenger, dispatcher, 7), 7)
         self.assertEqual(messenger.requested_offset, 7)
-        self.assertEqual(messenger.requested_limit, 100)
+        self.assertEqual(messenger.requested_limit, 50)
         self.assertEqual(messenger.requested_allowed_updates, ("message",))
         dispatcher.dispatch.assert_not_called()

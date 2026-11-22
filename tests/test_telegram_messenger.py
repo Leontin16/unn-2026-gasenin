@@ -3,14 +3,16 @@
 import json
 import unittest
 from unittest.mock import Mock, patch
-from urllib.parse import parse_qs, urlsplit
+from urllib.parse import urlsplit
 
 from bot.telegram_messenger import TelegramMessenger
 
 
 class TelegramMessengerTests(unittest.TestCase):
     @patch("bot.telegram_messenger.urlopen")
-    def test_get_updates_sends_required_long_poll_parameters(self, mock_urlopen: Mock) -> None:
+    def test_get_updates_sends_required_long_poll_parameters_as_json(
+        self, mock_urlopen: Mock
+    ) -> None:
         response = Mock()
         response.read.return_value = b'{"ok": true, "result": []}'
         mock_urlopen.return_value.__enter__.return_value = response
@@ -19,11 +21,13 @@ class TelegramMessengerTests(unittest.TestCase):
         self.assertEqual(messenger.get_updates(offset=0), [])
 
         request = mock_urlopen.call_args.args[0]
-        query = parse_qs(urlsplit(request.full_url).query)
-        self.assertEqual(query["offset"], ["0"])
-        self.assertEqual(query["timeout"], ["30"])
-        self.assertEqual(query["limit"], ["100"])
-        self.assertEqual(json.loads(query["allowed_updates"][0]), ["message"])
+        self.assertEqual(request.get_method(), "POST")
+        self.assertEqual(urlsplit(request.full_url).path, "/bottest-token/getUpdates")
+        body = json.loads(request.data.decode("utf-8"))
+        self.assertEqual(body["offset"], 0)
+        self.assertEqual(body["timeout"], 30)
+        self.assertEqual(body["limit"], 50)
+        self.assertEqual(body["allowed_updates"], ["message"])
 
 
 if __name__ == "__main__":
