@@ -1,7 +1,6 @@
 """Long polling loop for Telegram updates."""
 
 import time
-from typing import Any
 
 from bot.dispatcher import Dispatcher
 from bot.messenger import Messenger
