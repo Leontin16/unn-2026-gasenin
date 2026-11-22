@@ -12,7 +12,7 @@ class Messenger(ABC):
         self,
         offset: int,
         timeout: int = 30,
-        limit: int = 100,
+        limit: int = 50,
         allowed_updates: tuple[str, ...] = ("message",),
     ) -> list[dict[str, Any]]:
         """Return updates starting from offset."""

@@ -23,7 +23,7 @@ class TelegramMessenger(Messenger):
         self,
         method: str,
         params: dict[str, int | str] | None = None,
-        body: dict[str, int | str] | None = None,
+        body: dict[str, int | str | list[str]] | None = None,
     ) -> Any:
         url = f"{self.api_url}/{method}"
         if params:
@@ -44,16 +44,16 @@ class TelegramMessenger(Messenger):
         self,
         offset: int,
         timeout: int = 30,
-        limit: int = 100,
+        limit: int = 50,
         allowed_updates: tuple[str, ...] = ("message",),
     ) -> list[dict[str, Any]]:
         result = self._request(
             "getUpdates",
-            params={
+            body={
                 "offset": offset,
                 "timeout": timeout,
                 "limit": limit,
-                "allowed_updates": json.dumps(list(allowed_updates)),
+                "allowed_updates": list(allowed_updates),
             },
         )
         return result if isinstance(result, list) else []

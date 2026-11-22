@@ -11,7 +11,7 @@ def poll_once(messenger: Messenger, dispatcher: Dispatcher, offset: int) -> int:
     updates = messenger.get_updates(
         offset=offset,
         timeout=30,
-        limit=100,
+        limit=50,
         allowed_updates=("message",),
     )
 
