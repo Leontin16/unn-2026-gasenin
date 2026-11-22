@@ -8,7 +8,13 @@ class Messenger(ABC):
     """Interface for receiving updates and sending Telegram messages."""
 
     @abstractmethod
-    def get_updates(self, offset: int, timeout: int = 30) -> list[dict[str, Any]]:
+    def get_updates(
+        self,
+        offset: int,
+        timeout: int = 30,
+        limit: int = 100,
+        allowed_updates: tuple[str, ...] = ("message",),
+    ) -> list[dict[str, Any]]:
         """Return updates starting from offset."""
 
     @abstractmethod

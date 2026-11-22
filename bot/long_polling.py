@@ -1,6 +1,7 @@
 """Long polling loop for Telegram updates."""
 
 import time
+from typing import Any
 
 from bot.dispatcher import Dispatcher
 from bot.messenger import Messenger
@@ -8,7 +9,12 @@ from bot.messenger import Messenger
 
 def poll_once(messenger: Messenger, dispatcher: Dispatcher, offset: int) -> int:
     """Fetch and dispatch one batch of updates; return the next offset."""
-    updates = messenger.get_updates(offset)
+    updates = messenger.get_updates(
+        offset=offset,
+        timeout=30,
+        limit=100,
+        allowed_updates=("message",),
+    )
 
     for update in updates:
         update_id = update.get("update_id")

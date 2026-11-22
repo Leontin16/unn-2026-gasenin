@@ -9,7 +9,7 @@ from bot.messenger import Messenger
 
 
 class TelegramMessenger(Messenger):
-    """Send requests to the configured Telegram Bot API."""
+    """Send requests to the Telegram Bot API over HTTPS."""
 
     def __init__(self, token: str, base_url: str) -> None:
         if not token:
@@ -22,7 +22,7 @@ class TelegramMessenger(Messenger):
     def _request(
         self,
         method: str,
-        params: dict[str, int] | None = None,
+        params: dict[str, int | str] | None = None,
         body: dict[str, int | str] | None = None,
     ) -> Any:
         url = f"{self.api_url}/{method}"
@@ -40,8 +40,22 @@ class TelegramMessenger(Messenger):
             raise RuntimeError("Telegram API returned an error")
         return result.get("result")
 
-    def get_updates(self, offset: int, timeout: int = 30) -> list[dict[str, Any]]:
-        result = self._request("getUpdates", params={"offset": offset, "timeout": timeout})
+    def get_updates(
+        self,
+        offset: int,
+        timeout: int = 30,
+        limit: int = 100,
+        allowed_updates: tuple[str, ...] = ("message",),
+    ) -> list[dict[str, Any]]:
+        result = self._request(
+            "getUpdates",
+            params={
+                "offset": offset,
+                "timeout": timeout,
+                "limit": limit,
+                "allowed_updates": json.dumps(list(allowed_updates)),
+            },
+        )
         return result if isinstance(result, list) else []
 
     def send_message(self, chat_id: int, text: str) -> None:
