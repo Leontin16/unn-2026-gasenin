@@ -12,11 +12,14 @@ class TelegramMessenger(Messenger):
     """Send requests to the Telegram Bot API over HTTPS."""
 
     def __init__(self, token: str, base_url: str) -> None:
-        if not token:
-            raise ValueError("Telegram token is empty")
-        if not base_url.startswith("https://"):
-            raise ValueError("TELEGRAM_BASE_URL must use HTTPS")
-        self.api_url = f"{base_url.rstrip('/')}/bot{token}"
+    if not token:
+        raise ValueError("Telegram token is empty")
+
+    parsed_url = urlsplit(base_url)
+    if parsed_url.scheme not in {"http", "https"} or not parsed_url.netloc:
+        raise ValueError("TELEGRAM_BASE_URL must be a valid HTTP(S) URL")
+
+    self.api_url = f"{base_url.rstrip('/')}/bot{token}"
 
     def _request(
         self,
